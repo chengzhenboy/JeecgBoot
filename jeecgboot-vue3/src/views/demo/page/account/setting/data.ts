@@ -12,11 +12,11 @@ export interface ListItem {
 
 // tab的list
 export const settingList = [
-  {
+/*  {
     key: '1',
-    name: '基本设置',
+    name: '我的消息',
     component: 'BaseSetting',
-  },
+  },*/
   {
     key: '2',
     name: '安全设置',

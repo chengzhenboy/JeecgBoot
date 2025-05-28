@@ -65,6 +65,7 @@ public class LowCodeModeInterceptor implements HandlerInterceptor {
             log.info("低代码模式，拦截请求路径：" + requestURI);
             LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
             Set<String> hasRoles = null;
+            log.info("get loginUser info: {}", loginUser);
             if (loginUser == null) {
                 loginUser = commonAPI.getUserByName(JwtUtil.getUserNameByToken(SpringContextUtils.getHttpServletRequest()));
             }

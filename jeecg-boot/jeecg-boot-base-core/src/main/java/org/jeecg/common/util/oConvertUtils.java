@@ -656,7 +656,7 @@ public class oConvertUtils {
 	 * @param place 定义随机数的位数
 	 */
 	public static String randomGen(int place) {
-		String base = "qwertyuioplkjhgfdsazxcvbnmQAZWSXEDCRFVTGBYHNUJMIKLOP0123456789";
+		String base = "wczqwertyuioplkjhgfdsazxcvbnmQAZWSXEDCRFVTGBYHNUJMIKLOP0123456789";
 		StringBuffer sb = new StringBuffer();
 		Random rd = new Random();
 		for(int i=0;i<place;i++) {
