@@ -80,7 +80,7 @@ public class LoginController {
 			return result.error500("该用户登录失败次数过多，请于10分钟后再次登录！");
 		}
 
-		// step.1 验证码check
+		/*// step.1 验证码check
         String captcha = sysLoginModel.getCaptcha();
         if(captcha==null){
             result.error500("验证码无效");
@@ -100,7 +100,7 @@ public class LoginController {
 			// 改成特殊的code 便于前端判断
 			result.setCode(HttpStatus.PRECONDITION_FAILED.value());
 			return result;
-		}
+		}*/
 		
 		// step.2 校验用户是否存在且有效
 		LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
@@ -124,8 +124,8 @@ public class LoginController {
 		userInfo(sysUser, result, request);
 
 		// step.5  登录成功删除验证码
-		redisUtil.del(realKey);
-		redisUtil.del(CommonConstant.LOGIN_FAIL + username);
+		//redisUtil.del(realKey);
+		//redisUtil.del(CommonConstant.LOGIN_FAIL + username);
 
 		// step.6  记录用户登录日志
 		LoginUser loginUser = new LoginUser();

@@ -239,6 +239,7 @@
       margin-bottom: 2px;
       border-bottom: 0px;
       border-left: 0px;
+      font-size: 30px;
     }
     
     &--light {

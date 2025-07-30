@@ -50,6 +50,7 @@ const transform: AxiosTransform = {
       throw new Error(t('sys.api.apiRequestFailed'));
     }
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
+    // @ts-ignore
     const { code, result, message, success } = data;
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = data && Reflect.has(data, 'code') && (code === ResultEnum.SUCCESS || code === 200);
@@ -253,6 +254,7 @@ const transform: AxiosTransform = {
         return Promise.reject(error);
       }
     } catch (error) {
+      // @ts-ignore
       throw new Error(error);
     }
 
@@ -270,7 +272,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // authenticationScheme: 'Bearer',
         authenticationScheme: '',
         //接口超时设置
-        timeout: 10 * 1000,
+        timeout: 30 * 1000,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,
         headers: { 'Content-Type': ContentTypeEnum.JSON },
