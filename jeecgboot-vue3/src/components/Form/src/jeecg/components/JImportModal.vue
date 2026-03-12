@@ -5,7 +5,7 @@
       <div style="margin: 0 5px 5px" v-if="online">
         <span style="display: inline-block; height: 32px; line-height: 32px; vertical-align: middle">是否开启校验:</span>
         <span style="margin-left: 6px">
-          <a-switch :checked="validateStatus == 1" @change="handleChangeValidateStatus" checked-children="是" un-checked-children="否" />
+          <a-switch :checked="validateStatus == 0" @change="handleChangeValidateStatus" checked-children="是" un-checked-children="否" :disabled="true" />
         </span>
       </div>
       <!--上传-->
@@ -171,7 +171,7 @@
         fileList.value = [];
         uploading.value = false;
         foreignKeys.value = arg;
-        validateStatus.value = 0;
+        validateStatus.value = 1;
       }
 
       return {
