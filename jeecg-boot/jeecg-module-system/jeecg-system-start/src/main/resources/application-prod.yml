@@ -23,26 +23,11 @@ spring:
   # flyway配置
   flyway:
     # 是否启用flyway
-    enabled: true
-    # 编码格式，默认UTF-8
-    encoding: UTF-8
-    # 迁移sql脚本文件存放路径，官方默认db/migration
-    locations: classpath:flyway/sql/mysql
-    # 迁移sql脚本文件名称的前缀，默认V
-    sql-migration-prefix: V
-    # 迁移sql脚本文件名称的分隔符，默认2个下划线__
-    sql-migration-separator: __
-    # 避免带${}sql执行失败
-    placeholder-prefix: '#('
-    placeholder-suffix: )
-    # 迁移sql脚本文件名称的后缀
-    sql-migration-suffixes: .sql
-    # 迁移时是否进行校验，默认true
-    validate-on-migrate: true
-    # 当迁移发现数据库非空且存在没有元数据的表时，自动执行基准迁移，新建schema_version表
-    baseline-on-migrate: true
+    enabled: false
     # 是否关闭要清除已有库下的表功能,生产环境必须为true,否则会删库，非常重要！！！
     clean-disabled: true
+    # 迁移sql脚本存放路径
+    locations: classpath:flyway/sql/mysql
   servlet:
     multipart:
       max-file-size: 10MB
@@ -54,16 +39,13 @@ spring:
     username: jeecgos@163.com
     password: ??
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+      mail.smtp.auth: true
+      smtp.ssl.enable: true
   ## quartz定时任务,采用数据库方式
   quartz:
     job-store-type: jdbc
-    initialize-schema: embedded
+    jdbc:
+      initialize-schema: embedded
     #定时任务开关，true-开  false-关
     auto-startup: true
     #延迟1秒启动定时任务
@@ -206,12 +188,28 @@ jeecg:
     apiKey: ??
     apiHost: https://api.deepseek.com
     timeout: 60
+  # AIRag向量库
+  ai-rag:
+    # AI流程敏感节点(stdio=命令行节点, sql=SQL节点)
+    allow-sensitive-nodes: sql,stdio
+    embed-store:
+      host: 127.0.0.1
+      port: 5432
+      database: postgres
+      user: postgres
+      password: postgres
+      table: embeddings
+  #  Unipush配置 云函数调用 URL 化地址
+  unicloud:
+    pushUrl:
   # 平台上线安全配置
   firewall:
     # 数据源安全 (开启后，Online报表和图表的数据源为必填)
     dataSourceSafe: false
     # 低代码模式（dev:开发模式，prod:发布模式——关闭所有在线开发配置能力）
-    lowCodeMode: dev
+    lowCodeMode: prod
+    # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+    is-concurrent: true
   # 签名密钥串(前后端要一致，正式发布请自行修改)
   signatureSecret: dd05f1c54d63749eda95f9fa6d49v442a
   #签名拦截接口
@@ -229,6 +227,8 @@ jeecg:
     webapp: /opt/jeecg-boot/webapp
   shiro:
     excludeUrls: /test/jeecgDemo/demo3,/test/jeecgDemo/redisDemo/**,/bigscreen/category/**,/bigscreen/visual/**,/bigscreen/map/**,/jmreport/bigscreen2/**,/api/getUserInfo
+  # 短信发送方式 aliyun阿里云短信 tencent腾讯云短信
+  smsSendType: aliyun
   #阿里云oss存储和大鱼短信秘钥配置
   oss:
     accessKey: ??
@@ -253,6 +253,17 @@ jeecg:
     cluster-name: jeecg-ES
     cluster-nodes: 127.0.0.1:9200
     check-enabled: false
+    SMS_461885023:
+  #腾讯短信秘钥配置
+  tencent:
+    # 接入域名
+    endpoint: sms.tencentcloudapi.com
+    secretId: ??
+    secretKey: ??
+    # 应用ID
+    sdkAppId: ??
+    # 地域信息
+    region: ap-beijing
   # 在线预览文件服务器地址配置
   file-view-domain: http://fileview.jeecg.com
   # minio文件上传
@@ -271,6 +282,12 @@ jeecg:
       dataSourceSafe: false
       # 低代码开发模式（dev:开发模式，prod:发布模式—关闭在线报表设计功能，分配角色admin、lowdeveloper可以放开限制）
       lowCodeMode: prod
+    # 高德地图Api配置(v2.1.3+ BI新增高德地图)
+    gao-de-api:
+      # 应用key
+      api-key: ??
+      # 应用秘钥
+      secret-key: ??
   #xxl-job配置
   xxljob:
     enabled: false
@@ -293,13 +310,13 @@ jeecg:
     app-id: ??
     api-key: ??
     secret-key: ??
-
 #cas单点登录
 cas:
   prefixUrl: http://cas.example.org:8443/cas
 #Mybatis输出sql日志
 logging:
   level:
+    org.springframework.context.support.PostProcessorRegistrationDelegate: error
     org.flywaydb: debug
     org.jeecg.modules.system.mapper: info
 #swagger

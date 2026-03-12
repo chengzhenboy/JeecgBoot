@@ -10,14 +10,14 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
-import org.springframework.beans.factory.InitializingBean;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +33,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +47,7 @@ import java.util.concurrent.TimeUnit;
  * @Author qinfeng
  *
  */
+@Slf4j
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
@@ -58,6 +58,14 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Autowired(required = false)
     private PrometheusMeterRegistry prometheusMeterRegistry;
+
+    /**
+     * meterRegistryPostProcessor
+     * for [QQYUN-12558]【监控】系统监控的头两个tab不好使，接口404
+     */
+    @Autowired(required = false)
+    @Qualifier("meterRegistryPostProcessor")
+    private BeanPostProcessor meterRegistryPostProcessor;
 
     /**
      * 静态资源的配置 - 使得可以从磁盘中读取 Html、图片、视频、音频等
@@ -81,7 +89,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("doc.html");
+        registry.addViewController("/").setViewName("redirect:/doc.html");
     }
 
     @Bean
@@ -134,7 +142,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         return objectMapper;
     }
 
-    //update-begin---author:chenrui ---date:20240514  for：[QQYUN-9247]系统监控功能优化------------
 //    /**
 //     * SpringBootAdmin的Httptrace不见了
 //     * https://blog.csdn.net/u013810234/article/details/110097201
@@ -143,16 +150,21 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 //    public InMemoryHttpTraceRepository getInMemoryHttpTrace(){
 //        return new InMemoryHttpTraceRepository();
 //    }
-    //update-end---author:chenrui ---date:20240514  for：[QQYUN-9247]系统监控功能优化------------
 
 
     /**
-     * 解决metrics端点不显示jvm信息的问题(zyf)
+     * 在Bean初始化完成后立即配置PrometheusMeterRegistry，避免在Meter注册后才配置MeterFilter
+     * for [QQYUN-12558]【监控】系统监控的头两个tab不好使，接口404
+     * @author chenrui
+     * @date 2025/5/26 16:46
      */
-    @Bean
-    @ConditionalOnBean(name = "meterRegistryPostProcessor")
-    InitializingBean forcePrometheusPostProcessor(BeanPostProcessor meterRegistryPostProcessor) {
-        return () -> meterRegistryPostProcessor.postProcessAfterInitialization(prometheusMeterRegistry, "");
+    @PostConstruct
+    public void initPrometheusMeterRegistry() {
+        // 确保在应用启动早期就配置MeterFilter，避免警告
+        if (null != meterRegistryPostProcessor && null != prometheusMeterRegistry) {
+            meterRegistryPostProcessor.postProcessAfterInitialization(prometheusMeterRegistry, "prometheusMeterRegistry");
+            log.info("PrometheusMeterRegistry 配置完成");
+        }
     }
 
 //    /**
