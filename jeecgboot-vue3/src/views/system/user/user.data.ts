@@ -313,7 +313,7 @@ export const formSchema: FormSchema[] = [
       };
     },
   },
-  {
+  /*{
     label: '主岗位',
     field: 'mainDepPostId',
     component: 'JSelectDepartPost',
@@ -343,7 +343,7 @@ export const formSchema: FormSchema[] = [
       }
       return !(values.selecteddeparts instanceof Array && values.selecteddeparts.length == 0);
     },
-  },
+  },*/
   {
     label: '租户',
     field: 'relTenantIds',
@@ -377,7 +377,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'multiple',
-      tagRender: ({ label, value, closable, onClose }) => {
+      tagRender: ({ label, closable, onClose }) => {
         // 计算显示文本：前面省略号 + 后面字符
         let displayLabel = label;
         if(displayLabel && label.length >= 20) {
@@ -459,10 +459,10 @@ export const formSchema: FormSchema[] = [
     label: '手机号码',
     field: 'phone',
     component: 'Input',
-    required: true,
+    required: false,
     dynamicRules: ({ model, schema }) => {
       return [
-        { ...rules.duplicateCheckRule('sys_user', 'phone', model, schema, true)[0], trigger: 'blur' },
+        { ...rules.duplicateCheckRule('sys_user', 'phone', model, schema, false)[0], trigger: 'blur' },
         { pattern: /^1[3456789]\d{9}$/, message: '手机号码格式有误', trigger: 'blur' },
       ];
     },

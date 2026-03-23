@@ -1,5 +1,5 @@
 server:
-  port: 8250
+  port: 8251
   tomcat:
     max-swallow-size: -1
   error:
@@ -103,7 +103,6 @@ spring:
     static-locations: classpath:/static/,classpath:/public/
   autoconfigure:
     exclude:
-      - com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
       - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
   datasource:
     druid:

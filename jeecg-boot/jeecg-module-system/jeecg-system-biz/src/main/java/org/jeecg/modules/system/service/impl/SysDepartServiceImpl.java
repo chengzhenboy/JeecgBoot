@@ -38,6 +38,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -1891,14 +1893,39 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
         if (code == null || code.isEmpty() || fixedLength <= 0) {
             return hierarchy;
         }
-        // 检查编码长度是否能被固定位数整除
+   /*     // 检查编码长度是否能被固定位数整除
         if (code.length() % fixedLength != 0) {
             throw new IllegalArgumentException("编码长度必须能被固定位数整除");
         }
         // 按固定位数分割并生成所有上级编码
         for (int i = fixedLength; i <= code.length(); i += fixedLength) {
             hierarchy.add(code.substring(0, i));
-        }
+        }*/
+		// 按字母位置分割层级
+		List<Integer> letterIndexes = new ArrayList<>();
+
+		// 找到所有字母的位置
+		for (int i = 0; i < code.length(); i++) {
+			if (Character.isLetter(code.charAt(i))) {
+				letterIndexes.add(i);
+			}
+		}
+
+		// 如果只有一个字母，直接返回整个编码
+		if (letterIndexes.size() <= 1) {
+			hierarchy.add(code);
+			return hierarchy;
+		}
+
+		// 生成每个层级
+		for (int i = 1; i < letterIndexes.size(); i++) {
+			int endIndex = letterIndexes.get(i);
+			hierarchy.add(code.substring(0, endIndex));
+		}
+
+		// 添加完整的编码
+		hierarchy.add(code);
+
         return hierarchy;
     }
 

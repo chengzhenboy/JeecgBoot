@@ -27,9 +27,9 @@
                   <div class="aui-flex-box" :class="activeIndex === 'accountLogin' ? 'activeNav on' : ''" @click="loginClick('accountLogin')"
                     >{{ t('sys.login.signInFormTitle') }}
                   </div>
-                  <div class="aui-flex-box" :class="activeIndex === 'phoneLogin' ? 'activeNav on' : ''" @click="loginClick('phoneLogin')"
+<!--                  <div class="aui-flex-box" :class="activeIndex === 'phoneLogin' ? 'activeNav on' : ''" @click="loginClick('phoneLogin')"
                     >{{ t('sys.login.mobileSignInFormTitle') }}
-                  </div>
+                  </div>-->
                 </div>
                 <div class="aui-form-box" style="height: 240px">
                   <a-form ref="loginRef" :model="formData" v-if="activeIndex === 'accountLogin'" @keyup.enter.native="loginHandleClick">
@@ -75,9 +75,9 @@
                             <a-checkbox v-model:checked="rememberMe">{{ t('sys.login.rememberMe') }}</a-checkbox>
                           </div>
                         </div>
-                        <div class="aui-forget">
+<!--                        <div class="aui-forget">
                           <a @click="forgetHandelClick"> {{ t('sys.login.forgetPassword') }}</a>
-                        </div>
+                        </div>-->
                       </div>
                     </div>
                   </a-form>
@@ -115,14 +115,15 @@
                     <a-button :loading="loginLoading" class="aui-link-login" type="primary" @click="loginHandleClick">
                       {{ t('sys.login.loginButton') }}</a-button>
                   </div>
-                  <div class="aui-flex">
+<!--                  <div class="aui-flex">
                     <a class="aui-linek-code aui-flex-box" @click="codeHandleClick">{{ t('sys.login.qrSignInFormTitle') }}</a>
                   </div>
                   <div class="aui-flex">
                     <a class="aui-linek-code aui-flex-box" @click="registerHandleClick">{{ t('sys.login.registerButton') }}</a>
-                  </div>
+                  </div>-->
                 </div>
               </div>
+<!--
               <a-form @keyup.enter.native="loginHandleClick">
                 <div class="aui-flex aui-third-text">
                   <div class="aui-flex-box aui-third-border">
@@ -152,6 +153,7 @@
                   </div>
                 </div>
               </a-form>
+-->
             </div>
           </div>
         </div>
@@ -186,7 +188,7 @@
   import MiniForgotpad from './MiniForgotpad.vue';
   import MiniRegister from './MiniRegister.vue';
   import MiniCodelogin from './MiniCodelogin.vue';
-  import logoImg from '/@/assets/loginmini/icon/jeecg_logo.png';
+  import logoImg from '/@/assets/loginmini/icon/jeecg_ad_text.png';
   import adTextImg from '/@/assets/loginmini/icon/jeecg_ad_text.png';
   import { AppLocalePicker, AppDarkModeToggle } from '/@/components/Application';
   import { useLocaleStore } from '/@/store/modules/locale';
@@ -224,8 +226,8 @@
   //账号登录表单字段
   const formData = reactive<any>({
     inputCode: '',
-    username: 'admin',
-    password: '123456',
+    username: '',
+    password: '',
     loginOrgCode: '',
   });
   //手机登录表单字段
